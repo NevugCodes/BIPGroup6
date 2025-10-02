@@ -1,82 +1,155 @@
-# Museum Catalog Description Generator
+# Museum Object Catalogue Automation
 
-Welcome to the Museum Catalog Description Generator! This tool helps you create professional, detailed descriptions for museum objects using artificial intelligence. Whether you're a museum professional, archivist, or art enthusiast, this tool simplifies the process of cataloging your collection.
+This project automates the creation of multilingual, museum-style catalogue entries for digitized objects (e.g., typewriters and AEG machines) and generates a browsable static website for curators, researchers, and visitors.  
 
-## 🚀 Getting Started
+It was developed in collaboration with **HTW Berlin** and the **Technisches Museum Berlin** as part of a digital humanities pipeline.
 
-### What You'll Need
-- A computer with Python 3.8 or higher installed
-- An OpenAI API key (get one at [OpenAI's website](https://platform.openai.com/))
-- Your collection images ready to be processed
+---
 
-### Quick Setup
-1. **Install Python** if you haven't already (download from [python.org](https://www.python.org/downloads/))
-2. **Download this project** to your computer
-3. **Install requirements** by opening a terminal in the project folder and running:
-   ```bash
-   pip install -r requirements.txt
-   ```
-4. **Set up your API key** by creating a file named `.env` in the project folder with this line:
-   ```
-   OPENAI_API_KEY=your_api_key_here
-   ```
-   (Replace `your_api_key_here` with your actual OpenAI API key)
+## Overview
 
-## 📂 Preparing Your Images
+The workflow consists of three main stages:
 
-1. Create a folder named `images` in the project folder if it doesn't exist
-2. Inside `images`, create subfolders by year (e.g., `1997`, `1998`, etc.)
-3. Place your object images in these year folders
-   - Supported formats: JPG, PNG, TIFF, BMP
-   - Name your files clearly (e.g., `object123_front.jpg`, `object123_back.jpg`)
+### 1. Image Preparation (`copy_RelevantImages.py`)
+- Reads object numbers from Excel lists provided by the museum (e.g., *Liste_Schreibmaschinen.xls*, *Liste_AEG Produktsammlung.xls*).  
+- Extracts and copies relevant image files from the raw `images/<year>/` folders into structured `output/` directories.  
+- Logs successes and missing entries into CSV files for transparency.
 
-## 🔄 How to Use the Tool
+### 2. Automated Descriptions (`autoOpenAIDescription.py`)
+- Uses the **OpenAI API** to generate detailed, structured catalogue entries.  
+- Inputs:  
+  - Up to **5 images per object** (first five numerically sorted).  
+  - Metadata fields from Excel (inventory number, contributors, materials, dimensions, location, detailed name, year of manufacture).  
+- Outputs:  
+  - Multilingual descriptions in **English, German, Polish, and French**.  
+  - Strict museum documentation style (no invented facts, assumptions clearly labeled, conflicts flagged).  
+  - Saved in `output/descriptions/descriptions.xlsx` with metadata and generated text.  
+- Features:  
+  - Batch processing limit (default: 10 objects per run).  
+  - Automatic retry on API rate limits with exponential backoff.  
+  - Resume support (skips already processed objects).
 
-This project consists of three main scripts that you'll use in order:
+### 3. Website Generation (`build_site.py`)
+- Converts the `descriptions.xlsx` output into a static HTML site.  
+- Each object gets its own page with:  
+  - Hero image and clickable thumbnails.  
+  - Object ID, description text, and metadata.  
+- Generates an **index page with cards** for browsing the collection.  
+- Styling is lightweight, responsive, and dark-themed.
 
-### 1. Organize Your Images
-```bash
-python scripts/copy_RelevantImages.py
+---
+
+## Project Structure
+
 ```
-This script helps you organize and prepare your images for processing.
+.
+├── data/                          # Excel lists from the museum
+│   ├── Liste_Schreibmaschinen.xls
+│   └── Liste_AEG Produktsammlung.xls
+├── images/                        # Raw image archive (subfolders by year, e.g. 1996, 1997…)
+├── output/
+│   ├── schreibmaschinen/          # Copied & relevant typewriter images
+│   ├── aeg/                       # Copied & relevant AEG images
+│   ├── logs/                      # Logs of copied/missing images
+│   └── descriptions/              # AI-generated descriptions (.xlsx)
+├── site/                          # Generated static website
+│   ├── index.html
+│   ├── assets/styles.css
+│   └── object/                    # One HTML page per object
+├── copy_RelevantImages.py
+├── autoOpenAIDescription.py
+├── build_site.py
+└── .env                           # Must contain OPENAI_API_KEY
+```
+
+---
+
+## Requirements
+
+- Python 3.10+
+- Install dependencies:
+  ```bash
+  pip install -r requirements.txt
+  ```
+- Dependencies:
+  - `pandas`
+  - `openai`
+  - `python-dotenv`
+  - `xlrd`
+  - `pillow` (optional, for image resizing)
+
+---
+
+## Usage
+
+### 1. Copy Relevant Images
+```bash
+python copy_RelevantImages.py
+```
+- Extracts and copies relevant object images into `output/`.
+- Creates CSV logs of copied and missing files.
 
 ### 2. Generate Descriptions
 ```bash
-python scripts/autoOpenAiDescription.py
+python autoOpenAIDescription.py
 ```
-Run this script to generate descriptions for your objects. You can run this multiple times to generate more descriptions.
+- Reads object metadata and images.  
+- Sends them to the OpenAI API with a structured prompt.  
+- Writes multilingual descriptions into `output/descriptions/descriptions.xlsx`.  
+- Processes 10 new objects per run (skipping already completed).  
 
-### 3. Build Your Website
-When you're happy with the descriptions and have enough content:
+⚠️ Requires an **OpenAI API key** in a `.env` file:
+```env
+OPENAI_API_KEY=sk-...
+```
+
+### 3. Build Static Website
 ```bash
-python scripts/build_site.py
+python build_site.py
 ```
-This will create a website with your collection catalog.
+- Reads `descriptions.xlsx` and images.  
+- Generates a fully browsable static site in `site/`.  
+- Open `site/index.html` in your browser.
 
-## 📊 Understanding the Output
+---
 
-After running the description generator, you'll find:
-- **Generated descriptions** in the `output/descriptions/` folder
-- **Log files** in `output/logs/` to track what was processed
-- **Final website** in the `build/` directory after running the build script
+## Example Workflow
 
-## 💡 Tips for Best Results
-- **Start small**: Try with a few images first to see how it works
-- **Review the output**: AI is powerful but not perfect - always review the generated content
-- **Organize your files**: Keep your images well-organized in year folders
-- **Be patient**: Processing many images might take some time
+1. Place museum Excel lists in `/data/` and raw image archive in `/images/YYYY/`.  
+2. Run `copy_RelevantImages.py` → curated images in `/output/`.  
+3. Run `autoOpenAIDescription.py` → AI-generated catalogue entries in `/output/descriptions/descriptions.xlsx`.  
+4. Run `build_site.py` → website in `/site/`.  
+5. Open `site/index.html` and browse the results.
 
-## ❓ Need Help?
+---
 
-If you run into any issues:
-1. Check the `output/logs/` folder for error messages
-2. Make sure your API key is correctly set in the `.env` file
-3. Ensure your images are in the correct format and location
+## Notes
 
-## 📄 License
+- Each object description is **non-hallucinatory**:  
+  - Facts must be either visible in photos, in metadata, or from cited sources.  
+  - If uncertain → marked as *assumption* or *not available*.  
+  - Conflicts between photos and metadata are flagged as *inconsistencies*.  
 
-This project is open source and available under the MIT License - see the [LICENSE](LICENSE) file for details.
+- The project was designed to support **museum professionals** by:  
+  - Reducing manual cataloguing workload.  
+  - Ensuring multilingual access.  
+  - Providing a clean, visual browsing interface.
 
-## 🙏 Credits
+---
 
-Created with ❤️ for museum professionals and collection managers. We hope this tool makes your cataloging work easier and more efficient!
+## License
+
+```
+Custom License for HTW Berlin and Technisches Museum Berlin
+
+Copyright (c) 2025 Güven Adak
+
+Permission is hereby granted to HTW Berlin and the Technisches Museum Berlin
+to use, copy, modify, and distribute this software and its documentation for
+academic, research, and institutional purposes, free of charge.
+
+No other individuals or organizations are granted rights under this license
+without the express written permission of the copyright holder.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
+```
