@@ -1,95 +1,82 @@
 # Museum Catalog Description Generator
 
-This project is designed to automatically generate professional museum catalog descriptions for objects using AI. It processes images and metadata to create detailed, academic-style descriptions following museum documentation standards.
+Welcome to the Museum Catalog Description Generator! This tool helps you create professional, detailed descriptions for museum objects using artificial intelligence. Whether you're a museum professional, archivist, or art enthusiast, this tool simplifies the process of cataloging your collection.
 
-## Features
+## 🚀 Getting Started
 
-- Processes multiple images per museum object
-- Generates structured catalog entries with consistent formatting
-- Supports various image formats (JPG, PNG, TIFF, BMP)
-- Handles batch processing of multiple objects
-- Includes error handling and logging
-- Configurable settings for image processing and API usage
+### What You'll Need
+- A computer with Python 3.8 or higher installed
+- An OpenAI API key (get one at [OpenAI's website](https://platform.openai.com/))
+- Your collection images ready to be processed
 
-## Prerequisites
-
-- Python 3.8 or higher
-- OpenAI API key
-- Required Python packages (see Installation)
-
-## Installation
-
-1. Clone this repository
-2. Install the required packages:
+### Quick Setup
+1. **Install Python** if you haven't already (download from [python.org](https://www.python.org/downloads/))
+2. **Download this project** to your computer
+3. **Install requirements** by opening a terminal in the project folder and running:
    ```bash
    pip install -r requirements.txt
    ```
-3. Create a `.env` file in the project root with your OpenAI API key:
+4. **Set up your API key** by creating a file named `.env` in the project folder with this line:
    ```
    OPENAI_API_KEY=your_api_key_here
    ```
+   (Replace `your_api_key_here` with your actual OpenAI API key)
 
-## Project Structure
+## 📂 Preparing Your Images
 
+1. Create a folder named `images` in the project folder if it doesn't exist
+2. Inside `images`, create subfolders by year (e.g., `1997`, `1998`, etc.)
+3. Place your object images in these year folders
+   - Supported formats: JPG, PNG, TIFF, BMP
+   - Name your files clearly (e.g., `object123_front.jpg`, `object123_back.jpg`)
+
+## 🔄 How to Use the Tool
+
+This project consists of three main scripts that you'll use in order:
+
+### 1. Organize Your Images
+```bash
+python scripts/copy_RelevantImages.py
 ```
-.
-├── images/                  # Directory containing object images
-│   └── 2025/               # Year-based subdirectories
-├── output/
-│   ├── aeg/                 # Processed AEG object data
-│   ├── descriptions/        # Generated descriptions
-│   └── logs/                # Log files for processing
-├── scripts/
-│   ├── automatic_description_Hier.py  # Main script for description generation
-│   ├── chatapi_Bild_und_Text.py       # API integration for image+text processing
-│   └── copy_images_from_excel.py      # Utility for processing image data from Excel
-├── .env                    # Environment variables (not in version control)
-└── requirements.txt        # Python dependencies
+This script helps you organize and prepare your images for processing.
+
+### 2. Generate Descriptions
+```bash
+python scripts/autoOpenAiDescription.py
 ```
+Run this script to generate descriptions for your objects. You can run this multiple times to generate more descriptions.
 
-## Usage
+### 3. Build Your Website
+When you're happy with the descriptions and have enough content:
+```bash
+python scripts/build_site.py
+```
+This will create a website with your collection catalog.
 
-1. Place your object images in the appropriate subdirectories under `images/`
-2. Run the main script:
-   ```bash
-   python scripts/automatic_description_Hier.py
-   ```
-3. Generated descriptions will be saved in `output/descriptions/descriptions.xlsx`
+## 📊 Understanding the Output
 
-## Configuration
+After running the description generator, you'll find:
+- **Generated descriptions** in the `output/descriptions/` folder
+- **Log files** in `output/logs/` to track what was processed
+- **Final website** in the `build/` directory after running the build script
 
-You can modify the following settings in `automatic_description_Hier.py`:
-- `INPUT_DIRS`: Directories to scan for object images
-- `MAX_IMAGES_PER_OBJECT`: Maximum number of images to process per object
-- `RESIZE_MAX_SIDE`: Maximum dimension for image resizing (in pixels)
-- `REQUEST_COOLDOWN_SEC`: Delay between API requests (to avoid rate limiting)
-- `PROMPT`: Customize the AI prompt for description generation
+## 💡 Tips for Best Results
+- **Start small**: Try with a few images first to see how it works
+- **Review the output**: AI is powerful but not perfect - always review the generated content
+- **Organize your files**: Keep your images well-organized in year folders
+- **Be patient**: Processing many images might take some time
 
-## Output
+## ❓ Need Help?
 
-The system generates an Excel file (`descriptions.xlsx`) containing:
-- Object IDs
-- Generated descriptions
-- Source information
-- Technical details
-- Historical context
-- Conservation notes
-- Exhibition history
-- Bibliography
+If you run into any issues:
+1. Check the `output/logs/` folder for error messages
+2. Make sure your API key is correctly set in the `.env` file
+3. Ensure your images are in the correct format and location
 
-## Logging
+## 📄 License
 
-Log files are created in the `output/logs/` directory to track:
-- Successfully processed objects
-- Any errors or issues encountered
-- API usage and response times
+This project is open source and available under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Notes
+## 🙏 Credits
 
-- The system is designed to be conservative with API usage to minimize costs
-- All generated content should be reviewed by a professional before publication
-- The system marks uncertain information and assumptions clearly in the output
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+Created with ❤️ for museum professionals and collection managers. We hope this tool makes your cataloging work easier and more efficient!
