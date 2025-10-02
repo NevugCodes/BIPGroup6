@@ -142,7 +142,7 @@ python build_site.py
 ```
 Custom License for HTW Berlin and Technisches Museum Berlin
 
-Copyright (c) 2025 Güven Adak
+Copyright (c) 2025 The Project Contributors
 
 Permission is hereby granted to HTW Berlin and the Technisches Museum Berlin
 to use, copy, modify, and distribute this software and its documentation for
