@@ -140,7 +140,7 @@ python build_site.py
 ## License
 
 ```
-Custom License for HTW Berlin and Technisches Museum Berlin
+Custom License for HTW Berlin, Akademia Leona Koźmińskiego, ESSCA, ISM and Technisches Museum Berlin
 
 Copyright (c) 2025 
 Contributors: 
@@ -150,7 +150,7 @@ Contributors:
 - Katsiaryna Lagutkowa
 - Gladys Toukam
 
-Permission is hereby granted to HTW Berlin and the Technisches Museum Berlin
+Permission is hereby granted to HTW Berlin, Akademia Leona Koźmińskiego, ESSCA, ISM and the Technisches Museum Berlin
 to use, copy, modify, and distribute this software and its documentation for
 academic, research, and institutional purposes, free of charge.
 
