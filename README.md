@@ -1,8 +1,8 @@
-# Museum Object Catalogue Automation
+# Museum Object Description Automation
 
-This project automates the creation of multilingual, museum-style catalogue entries for digitized objects (e.g., typewriters and AEG machines) and generates a browsable static website for curators, researchers, and visitors.  
+This project automates the creation of multilingual, museum-style catalogue entries for digitized objects (such as typewriters and AEG machines) and generates a browsable static website for curators, researchers, and visitors.
 
-It was developed in collaboration with **HTW Berlin** and the **Technisches Museum Berlin** as part of a digital humanities pipeline.
+It was developed in collaboration with **HTW Berlin**, **Akademia Leona Koźmińskiego**, **ESSCA**, **ISM** and the **Technisches Museum Berlin** as part of a collaboration project.
 
 ---
 
